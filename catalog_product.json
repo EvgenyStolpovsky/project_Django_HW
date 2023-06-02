@@ -1,0 +1,57 @@
+[
+  {
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+      "name": "Зерносушилка мобильная",
+      "description": "Зерносушилки работают на природном или сжиженном газе.",
+      "image": "products/зерносушилка.png",
+      "category": "сельхоз",
+      "price": 300000,
+      "creation_at": "2023-06-02",
+      "modified_at": "2023-06-02"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "name": "Норийная вышка",
+      "description": "Нории предназначены для вертикального перемещения зернового вороха.",
+      "image": "products/норийные_вышки.png",
+      "category": "сельсхоз",
+      "price": 600000,
+      "creation_at": "2023-06-02",
+      "modified_at": "2023-06-02"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+      "name": "Машина первичной очистки зерна",
+      "description": "Предназначаются для очистки вороха зерновых и бобовых культур.",
+      "image": "products/машина_первичной_очистки_зерна.png",
+      "category": "сельсхоз",
+      "price": 500000,
+      "creation_at": "2023-06-02",
+      "modified_at": "2023-06-02"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+      "name": "промышленные",
+      "description": "оборудование для заводов и комплексов"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+      "name": "фермерские",
+      "description": "оборудование для заводов и комплексов"
+    }
+  }
+]
