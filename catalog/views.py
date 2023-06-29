@@ -1,8 +1,10 @@
+from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 
-from catalog.models import Category, Product, Blog
+from catalog.forms import ProductForm, VersionForm
+from catalog.models import Category, Product, Blog, Version
 
 
 def index(request):
@@ -20,6 +22,13 @@ class ProductsListView(generic.ListView):
         'title': "Товар"
     }
 
+    def get_queryset(self):
+        """Выводит активную версию товара models class Version(ForeignKey-Product),
+        отображается в inc_catalog_card.html"""
+        queryset = super().get_queryset()
+        queryset = queryset.prefetch_related('version_set')
+        return queryset
+
 class ProductsDetailView(generic.DetailView):
     """Карточка товара"""
     model = Product
@@ -29,6 +38,57 @@ class ProductsDetailView(generic.DetailView):
         context_data['title'] = context_data['object']
         return context_data
 
+class ProductsCreateView(generic.CreateView):
+    """Класс контроллер создания товара"""
+    model = Product
+    form_class = ProductForm
+    #fields = ('name', 'description', 'image', 'category', 'price', 'creation_at', 'modified_at',)
+    success_url = reverse_lazy('catalog:product_list')
+    template_name = 'catalog/product_form.html'
+
+class ProductsUpdateView(generic.UpdateView):
+    """Класс контроллер редактирования товара"""
+    model = Product
+    form_class = ProductForm
+    #fields = ('name', 'description', 'image', 'category', 'price', 'creation_at', 'modified_at',)
+    success_url = reverse_lazy('catalog:product_list')
+    template_name = 'catalog/product_form_with_formset.html'
+
+
+    def get_context_data(self, **kwargs):
+        """Возвращает формсет для работы со связанными через внешний ключ объектами"""
+        context_data = super().get_context_data(**kwargs)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = VersionFormset(instance=self.object)
+        return context_data
+
+    def form_valid(self, form):
+        """Сохранение формсета, форм валид принимает пост запрос от get_context_data(сверху),
+        сохраняем редактирование продукта """
+        context_data = self.get_context_data()
+        formset = context_data['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
+class ProductsDeleteView(generic.DeleteView):
+    """Класс контроллер удаления продукта"""
+    model = Product
+    success_url = reverse_lazy('catalog:product_list')
+
+
+
+
+
+
+
+
+#_____________________________класс BLOG____________________________________________
 class BlogListView(generic.ListView):
     """Полный список статей"""
     model = Blog
