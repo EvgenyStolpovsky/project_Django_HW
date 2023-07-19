@@ -3,7 +3,10 @@ from django.urls import reverse
 from transliterate import translit
 from django.utils.text import slugify
 
+from users.models import User
+
 NULLABLE = {'blank': True, 'null': True}
+
 
 class Product(models.Model):
     '''Класс описывающее продукцию'''
@@ -14,6 +17,8 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name='Цена за покупку')
     creation_at = models.DateField(verbose_name='Дата добавления')
     modified_at = models.DateField(verbose_name='Дата последнего изменения')
+
+    owner = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
 
     def __str__(self):
